@@ -1,49 +1,53 @@
 <?php
 
-// Almacenamos todos los arrays en la variable listas
-$arrays = [
-    [5, 12, 8, 20, 1], [1, 1, 2, 3, 5, 8, 13], [10, 10, 10, 10],
-    [19, 18, 17, 16, 15, 14, 13], [2, 4, 6, 8, 10, 12, 14, 16, 18, 20],
-    [1, 3, 5, 7, 9, 11, 13, 15, 17, 19], [7, 14, 7, 14, 7], [20, 1, 20, 1],
-    [11, 12, 13, 14, 15], [5, 10, 15, 20], [2, 3, 5, 7, 11, 13, 17, 19],
-    [9, 3, 1, 18, 4, 12, 7, 2, 10], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    [15, 15, 16, 16, 17, 17], [4, 9, 16], [8, 16, 8, 4, 2, 1],
-    [20, 20, 20, 5, 5, 1], [6, 12, 18], [1, 2, 2, 2, 3, 3, 4, 4, 4, 4],
-    [13, 7, 19, 2, 11, 5, 17]
-];
+function analizarEntradaUsuario(array $numeros) {
 
-// Nos encargamos de unificar todos los arrays en uno grande usando el operador ...
-$union = array_merge(...$arrays);
+    // Verificamos que el array no esté vacío
+    if (empty($numeros)) {
+        echo "ERROR El array no contiene datos.\n";
+        return;
+    }
 
-// Obtenemos el total de elementos y la suma total con funciones directas
-$totalNumeros = count($union);
-$sumaTotal = array_sum($union);
+    // Contamos el número de elementos y la suma total con funciones nativas
+    $totalNumeros = count($numeros);
+    $sumaTotal = array_sum($numeros);
 
-// array_count_values cuenta automáticamente cuántas veces aparece cada valor
-$conteoGlobal = array_count_values($union);
+    // Empleamos array_count_values para ver la cantidad de veces que se repite un valor
+    $conteoGlobal = array_count_values($numeros);
 
-// Calculamos la moda: buscamos el valor máximo de repeticiones y sus llaves
-$maxRepeticiones = max($conteoGlobal);
-$modas = array_keys($conteoGlobal, $maxRepeticiones);
+    // Calculamos la moda ordenando de mayor a menor 
+    arsort($conteoGlobal); 
+    
+    // Vemos el número que más aparece (el primero después de ordenar)
+    $maxRepeticiones = max($conteoGlobal);
 
-// Cálculo de la Media global
-$mediaGlobal = $sumaTotal / $totalNumeros;
+    // Extrae los números que más se repiten (las llaves que coinciden con el máximo)
+    $modas = array_keys($conteoGlobal, $maxRepeticiones);
 
-echo "---Analisis de array (Usando funciones nativas)---\n";
-echo "Total de números procesados: $totalNumeros\n";
-echo "Media global: " . number_format($mediaGlobal, 2) . "\n";
+    // Cálculo de la Media global
+    $mediaGlobal = $sumaTotal / $totalNumeros;
 
-// implode une el array de modas en un string separado por comas
-echo "Moda: " . implode(', ', $modas) . " aparece $maxRepeticiones veces\n";
+    echo "---Analisis de array---\n";
+    echo "Total de números procesados: $totalNumeros\n";
+    
+    // Empleamos number_format para el formato de los números y que solo muestre dos decimales
+    echo "Media global: " . number_format($mediaGlobal, 2) . "\n";
+    
+    // Empleamos implode para transformar el array de modas en un String que podamos imprimir
+    echo "Moda: " . implode(', ', $modas) . " aparece $maxRepeticiones veces\n";
 
-echo "---------------------------------\n";
-echo "Top 3 numeros mas frecuentes:\n";
+    echo "--- Conteo de repeticiones de cada numero ---\n";
 
-// Ordenamos de mayor a menor frecuencia
-arsort($conteoGlobal);
+    // Ordenamos por clave (el número) de menor a mayor para facilitar la lectura
+    ksort($conteoGlobal); 
 
-$i = 0;
-foreach ($conteoGlobal as $num => $veces) {
-    echo "Número $num: $veces veces\n";
-    if (++$i == 3) break;
+    foreach ($conteoGlobal as $num => $veces) {
+        // Si $veces es 1, no se repite, se imprimirá por pantalla "aparece 1 vez"
+        $mensaje = ($veces > 1) ? "se repite $veces veces" : "aparece 1 vez";
+        echo "El número $num $mensaje.\n";
+    }
 }
+
+// Ejemplo de uso
+$numeros = [20, 20, 20, 5, 5, 1];
+analizarEntradaUsuario($numeros);
