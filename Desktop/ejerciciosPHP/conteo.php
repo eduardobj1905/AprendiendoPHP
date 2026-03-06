@@ -4,40 +4,65 @@
 
 function analizarEntradaUsuario(array $numeros) {
 
-if (empty($numeros)) {
-        echo "Error: El array no contiene datos.\n";
-        return;
+
+// Contamos el numero de elementos que hay en el array y verificamos que no este vacio
+$totalNumeros = 0;
+foreach ($numeros as $n) {
+    $totalNumeros++;
+}
+
+if ($totalNumeros === 0) {
+    echo "ERROR: El array está vacío.\n";
+    exit;
+}
+
+//Calculamos la suma total de los elementos
+$sumaTotal = 0;
+foreach ($numeros as $n) {
+    $sumaTotal += $n;
+}
+
+//Contamos las repeticiones
+foreach ($numeros as $n) {
+    $conteoGlobal[$n] = ($conteoGlobal[$n] ?? 0) + 1;
+}
+//Buscamos la moda
+$maxRepeticiones = 0;
+foreach ($conteoGlobal as $veces) {
+    if ($veces > $maxRepeticiones) {
+        $maxRepeticiones = $veces;
     }
+}
 
-// Contamos el numero de elementos que hay en el array unificado y la suma total de estos
-$totalNumeros = count($numeros);
-$sumaTotal = array_sum($numeros);
-
-//Empleamos array_count_values para ver la cantidad de veces que se repite un valor
-$conteoGlobal = array_count_values($numeros);
-
-// Calculamos la moda ordenando de mayor a menor 
-arsort($conteoGlobal); 
-//Vemos el numero que mas aparece
-$maxRepeticiones = max($conteoGlobal);
-
-//Extrae los numeros que mas se repiten
-$modas = array_keys($conteoGlobal, $maxRepeticiones);
-
-// Cálculo de la Media global
+$modas = [];
+    $totalModas = 0; 
+    foreach ($conteoGlobal as $num => $veces) {
+        if ($veces === $maxRepeticiones) {
+            $modas[] = $num;
+            $totalModas++;
+        }
+    }
+//Calculamos la media
 $mediaGlobal = $sumaTotal / $totalNumeros;
 
-echo "---Analisis de arrray---\n";
-echo "Total de números procesados: $totalNumeros\n";
-//Empleamos number_format para el formato de los numeros y que solo muestre dos decimales
-echo "Media global: " . number_format($mediaGlobal, 2) . "\n";
-//Empleamos implode para transformar el array de modas en un String que podamos imprimir
-echo "Moda: " . implode(', ', $modas) . " aparece $maxRepeticiones veces\n";
 
+echo "---Analisis de arrray---\n";
+
+echo "Total de números procesados: $totalNumeros\n";
+
+echo "Media global: " . $mediaGlobal . "\n";
+
+//Utilizamos un bucle for para comprobar cuantas modas hay e imprimirlas
+echo "Moda: ";
+    for ($i = 0; $i < $totalModas; $i++) {
+        echo $modas[$i];
+        if ($i < $totalModas - 1) {
+            echo ", ";
+        }
+    }
+    echo " aparece $maxRepeticiones veces\n";
 echo "--- Conteo de repeticiones de cada numero ---\n";
 
-// Ordenamos de menor a mayor para facilitar la lectura
-ksort($conteoGlobal); 
 
  foreach ($conteoGlobal as $num => $veces) {
     // Si $veces es 1, no se repite se imprimira por pantalla aparece 1 vez
